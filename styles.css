@@ -1,8 +1,27 @@
-/*
+.reader-block-buttons {
+	position: fixed;
+	bottom: 8px;
+	display: flex;
+	z-index: var(--layer-status-bar);
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: vaR(--background-primary-alt);
+	border-radius: 100vh;
+	overflow: hidden;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.reader-block-buttons button {
+	width: 80px;
+	height: var(--input-height);
+}
 
-If your plugin does not need CSS, delete this file.
+.reader-highlight {
+	background-color: var(--color-base-30);
+	border-radius: var(--radius-s);
+	outline: 12px solid var(--color-base-30);
+}
 
-*/
+.markdown-preview-view.reader-mode
+	[class^="el-"]:not(.mod-ui):not(.reader-highlight) {
+	opacity: 0.5 !important;
+}

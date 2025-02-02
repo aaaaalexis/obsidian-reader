@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
-	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
+	"id": "obsidian-reader",
+	"name": "Reader",
+	"version": "0.0.1",
+	"minAppVersion": "1.4.0",
 	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"author": "Alexis C",
+	"authorUrl": "https://github.com/aaaaalexis",
+	"fundingUrl": "https://buymeacoffee.com/sevenaxis",
 	"isDesktopOnly": false
 }
