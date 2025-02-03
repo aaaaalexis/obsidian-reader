@@ -9,20 +9,7 @@ export class BlockNavigator {
 
 	async navigateToBlock(direction: NavigationDirection): Promise<void> {
 		const blocks = DOMUtils.getValidBlocks();
-		let currentIndex = DOMUtils.getCurrentBlockIndex();
-
-		if (currentIndex === -1) {
-			const activeFile = this.plugin.app.workspace.getActiveFile();
-			if (activeFile) {
-				const position = await ProgressStorage.loadPosition(
-					this.plugin,
-					activeFile.path
-				);
-				if (position) {
-					currentIndex = position.blockIndex;
-				}
-			}
-		}
+		const currentIndex = DOMUtils.getCurrentBlockIndex();
 
 		const nextIndex =
 			currentIndex === -1
@@ -129,23 +116,6 @@ export class BlockNavigator {
 				);
 				if (highlightedBlock) {
 					DOMUtils.scrollToBlock(highlightedBlock as HTMLElement);
-				} else {
-					const activeFile =
-						this.plugin.app.workspace.getActiveFile();
-					if (activeFile) {
-						const position = await ProgressStorage.loadPosition(
-							this.plugin,
-							activeFile.path
-						);
-						if (position) {
-							const blocks = DOMUtils.getValidBlocks();
-							if (position.blockIndex < blocks.length) {
-								const block = blocks[position.blockIndex];
-								DOMUtils.highlightBlock(block);
-								DOMUtils.scrollToBlock(block);
-							}
-						}
-					}
 				}
 			} else {
 				this.plugin.navigateBlocks(direction);
