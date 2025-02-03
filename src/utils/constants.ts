@@ -11,12 +11,6 @@ export const READER_CLASSES = {
 	active: "reader-active",
 } as const;
 
-// Add these new constants
-export const STORAGE = {
-	FILE_NAME: "progress.json",
-	CONFIG_PATH: "plugins/obsidian-reader",
-} as const;
-
 // Add DOM selectors
 export const DOM_SELECTORS = {
 	MARKDOWN_PREVIEW: ".markdown-preview-view",
