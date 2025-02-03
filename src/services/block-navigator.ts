@@ -1,6 +1,7 @@
 import { ReaderPlugin, NavigationDirection } from "../types/interfaces";
 import { ProgressStorage } from "./progress-storage";
 import { DOMUtils } from "../utils/dom-utils";
+import { READER_CLASSES } from "../utils/constants";
 
 export class BlockNavigator {
 	constructor(private plugin: ReaderPlugin) {}
@@ -28,9 +29,22 @@ export class BlockNavigator {
 		const target = evt.target as HTMLElement;
 		if (target.closest(".reader-block-buttons")) return;
 
-		const block = target.closest(".markdown-preview-section > *");
-		DOMUtils.highlightBlock(block as HTMLElement);
-		DOMUtils.scrollToBlock(block as HTMLElement);
+		const block = target.closest(
+			".markdown-preview-section > *"
+		) as HTMLElement;
+		if (!block) return;
+
+		// Check if clicked block is already highlighted
+		const isCurrentlyHighlighted = block.classList.contains(
+			READER_CLASSES.highlight
+		);
+
+		if (isCurrentlyHighlighted) {
+			DOMUtils.clearHighlights();
+		} else {
+			DOMUtils.highlightBlock(block);
+			DOMUtils.scrollToBlock(block);
+		}
 
 		await this.savePosition();
 	}
