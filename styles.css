@@ -18,7 +18,6 @@
 .reader-highlight {
 	background-color: var(--color-base-30);
 	border-radius: var(--radius-s);
-	outline: 12px solid var(--color-base-30);
 }
 
 .markdown-preview-view.reader-mode

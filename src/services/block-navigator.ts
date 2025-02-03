@@ -30,6 +30,8 @@ export class BlockNavigator {
 
 		const block = target.closest(".markdown-preview-section > *");
 		DOMUtils.highlightBlock(block as HTMLElement);
+		DOMUtils.scrollToBlock(block as HTMLElement);
+
 		await this.savePosition();
 	}
 
