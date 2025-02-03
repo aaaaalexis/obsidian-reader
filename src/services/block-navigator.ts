@@ -57,11 +57,35 @@ export class BlockNavigator {
 			this.plugin,
 			activeFile.path
 		);
-		if (!position || !position.enabled) return;
+
+		if (!position) {
+			await ProgressStorage.savePosition(
+				this.plugin,
+				activeFile.path,
+				-1,
+				false
+			);
+			this.enabled = false;
+			DOMUtils.clearHighlights();
+			return;
+		}
+
+		if (!position.enabled) {
+			this.enabled = false;
+			DOMUtils.clearHighlights();
+			return;
+		}
+
+		// Wait for DOM to be ready
+		const isDOMReady = await DOMUtils.waitForDOM();
+		if (!isDOMReady) {
+			console.debug("DOM not ready after maximum attempts");
+			return;
+		}
 
 		this.enabled = true;
 		const blocks = DOMUtils.getValidBlocks();
-		if (position.blockIndex < blocks.length) {
+		if (position.blockIndex >= 0 && position.blockIndex < blocks.length) {
 			const block = blocks[position.blockIndex];
 			DOMUtils.highlightBlock(block);
 			DOMUtils.scrollToBlock(block);
@@ -70,7 +94,6 @@ export class BlockNavigator {
 			}
 		}
 	}
-
 	private async savePosition(): Promise<void> {
 		const activeFile = this.plugin.app.workspace.getActiveFile();
 		if (!activeFile) return;

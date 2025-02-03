@@ -1,13 +1,13 @@
 import { ReaderPlugin } from "../types/interfaces";
 import { ReadingPosition } from "../types/interfaces";
-import { STORAGE_FILE } from "../utils/constants";
+import { STORAGE } from "../utils/constants";
 
 export class ProgressStorage {
 	private static getStoragePath(plugin: ReaderPlugin): string {
-		return `${plugin.app.vault.configDir}/plugins/obsidian-reader/${STORAGE_FILE}`;
+		return `${plugin.app.vault.configDir}/${STORAGE.CONFIG_PATH}/${STORAGE.FILE_NAME}`;
 	}
 
-	private static async loadPositions(
+	private static async managePositions(
 		plugin: ReaderPlugin
 	): Promise<Record<string, ReadingPosition>> {
 		const path = this.getStoragePath(plugin);
@@ -26,7 +26,7 @@ export class ProgressStorage {
 		enabled: boolean = true
 	): Promise<void> {
 		try {
-			const positions = await this.loadPositions(plugin);
+			const positions = await this.managePositions(plugin);
 			positions[filePath] = {
 				filePath,
 				blockIndex,
@@ -47,7 +47,7 @@ export class ProgressStorage {
 		filePath: string
 	): Promise<ReadingPosition | null> {
 		try {
-			const positions = await this.loadPositions(plugin);
+			const positions = await this.managePositions(plugin);
 			return positions[filePath] || null;
 		} catch (error) {
 			console.error("Failed to load reading position:", error);

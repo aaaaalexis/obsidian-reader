@@ -1,4 +1,4 @@
-import { READER_CLASSES } from "./constants";
+import { DOM_SELECTORS, READER_CLASSES } from "./constants";
 
 export class DOMUtils {
 	static isValidBlock(block: Element): boolean {
@@ -12,12 +12,12 @@ export class DOMUtils {
 
 	static getValidBlocks(): HTMLElement[] {
 		return Array.from(
-			document.querySelectorAll(".markdown-preview-section > *")
+			document.querySelectorAll(DOM_SELECTORS.MARKDOWN_SECTION)
 		).filter((block) => this.isValidBlock(block)) as HTMLElement[];
 	}
 
 	static getMarkdownPreviewView(): Element | null {
-		return document.querySelector(".markdown-preview-view");
+		return document.querySelector(DOM_SELECTORS.MARKDOWN_PREVIEW);
 	}
 
 	static scrollToBlock(block: HTMLElement): void {
@@ -60,4 +60,19 @@ export class DOMUtils {
 		) as HTMLElement;
 		return currentBlock ? blocks.indexOf(currentBlock) : -1;
 	}
+
+	static isDOMReady(): boolean {
+        return !!this.getMarkdownPreviewView() && 
+               this.getValidBlocks().length > 0;
+    }
+
+    static async waitForDOM(maxAttempts: number = 10, interval: number = 100): Promise<boolean> {
+        for (let i = 0; i < maxAttempts; i++) {
+            if (this.isDOMReady()) {
+                return true;
+            }
+            await new Promise(resolve => setTimeout(resolve, interval));
+        }
+        return false;
+    }
 }

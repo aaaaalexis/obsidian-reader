@@ -11,21 +11,19 @@ export default class ReaderPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		setTimeout(() => {
-			this.initializePlugin();
-		}, 500);
-	}
-
-	private async initializePlugin() {
 		this.blockNavigator = new BlockNavigator(this);
-
-		this.registerPluginFeatures();
-		await this.enableFunctionality();
-		this.restoreReadingPosition();
-	}
-
-	private registerPluginFeatures(): void {
 		this.addSettingTab(new ReaderSettingTab(this.app, this));
+		await this.enableFunctionality();
+
+		// Restore position on initial load
+		this.restoreReadingPosition();
+
+		// Restore (or initialize) reading progress on file-open
+		this.registerEvent(
+			this.app.workspace.on("file-open", () => {
+				this.blockNavigator.restorePosition();
+			})
+		);
 	}
 
 	private handleKeydown = (evt: KeyboardEvent): void => {
@@ -58,18 +56,11 @@ export default class ReaderPlugin extends Plugin {
 	}
 
 	private async enableFunctionality(): Promise<void> {
-		if (Platform.isMobile) {
-			this.blockNavigator.createMobileUI();
-		}
-
 		document.addEventListener(
 			"click",
 			this.blockNavigator.handleClick.bind(this.blockNavigator)
 		);
 		document.addEventListener("keydown", this.handleKeydown);
-
-		const previewView = DOMUtils.getMarkdownPreviewView();
-		previewView?.addClass(READER_CLASSES.enabled);
 	}
 
 	private async restoreReadingPosition(): Promise<void> {
