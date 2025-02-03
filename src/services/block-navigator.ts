@@ -31,7 +31,7 @@ export class BlockNavigator {
 
 	async handleClick(evt: MouseEvent): Promise<void> {
 		const target = evt.target as HTMLElement;
-		if (target.closest(".reader-block-buttons")) return;
+		if (target.closest(".reader-mobile-nav")) return;
 
 		const block = target.closest(
 			".markdown-preview-section > *"

@@ -1,27 +1,29 @@
-.reader-block-buttons {
+body {
+	--reader-highlight-bg: rgba(var(--mono-rgb-100), 0.1);
+	--reader-mobile-nav-bg: var(--background-primary-alt);
+}
+
+.reader-mobile-nav {
 	position: fixed;
 	bottom: 8px;
 	display: flex;
 	z-index: var(--layer-status-bar);
 	left: 50%;
 	transform: translateX(-50%);
-	background-color: vaR(--background-primary-alt);
+	background-color: var(--reader-mobile-nav-bg);
 	border-radius: 100vh;
 	overflow: hidden;
 }
 
-.reader-block-buttons button {
+.reader-mobile-nav button {
 	width: 80px;
 	height: var(--input-height);
 }
 
 .reader-highlight {
-	background-color: var(--color-base-30);
+	background-color: var(--reader-highlight-bg);
+	outline: var(--size-2-3) solid var(--reader-highlight-bg);
 	border-radius: var(--radius-s);
-}
-
-.reader-mode [class^="el-"] {
-	transition: opacity var(--anim-duration-fast);
 }
 
 .reader-active [class^="el-"]:not(.mod-ui):not(.reader-highlight) {

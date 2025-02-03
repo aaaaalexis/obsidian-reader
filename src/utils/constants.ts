@@ -7,7 +7,7 @@ export const DEFAULT_SETTINGS: ReaderSettings = {
 
 export const READER_CLASSES = {
 	highlight: "reader-highlight",
-	blockButtons: "reader-block-buttons",
+	blockButtons: "reader-mobile-nav",
 	active: "reader-active",
 } as const;
 
@@ -21,5 +21,5 @@ export const STORAGE = {
 export const DOM_SELECTORS = {
 	MARKDOWN_PREVIEW: ".markdown-preview-view",
 	MARKDOWN_SECTION: ".markdown-preview-section > *",
-	BLOCK_BUTTONS: ".reader-block-buttons",
+	BLOCK_BUTTONS: ".reader-mobile-nav",
 } as const;
