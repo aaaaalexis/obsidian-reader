@@ -2,14 +2,15 @@ import { ReaderPlugin, NavigationDirection } from "../types/interfaces";
 import { ProgressStorage } from "./progress-storage";
 import { DOMUtils } from "../utils/dom-utils";
 import { READER_CLASSES } from "../utils/constants";
+import { setIcon } from "obsidian";
 
 export class BlockNavigator {
 	constructor(private plugin: ReaderPlugin) {}
+
 	async navigateToBlock(direction: NavigationDirection): Promise<void> {
 		const blocks = DOMUtils.getValidBlocks();
 		let currentIndex = DOMUtils.getCurrentBlockIndex();
 
-		// If no block is highlighted, try to restore the saved position first
 		if (currentIndex === -1) {
 			const activeFile = this.plugin.app.workspace.getActiveFile();
 			if (activeFile) {
@@ -47,7 +48,6 @@ export class BlockNavigator {
 		) as HTMLElement;
 		if (!block) return;
 
-		// Check if clicked block is already highlighted
 		const isCurrentlyHighlighted = block.classList.contains(
 			READER_CLASSES.highlight
 		);
@@ -96,5 +96,76 @@ export class BlockNavigator {
 
 	clearHighlights(): void {
 		DOMUtils.clearHighlights();
+	}
+
+	createMobileUI(): void {
+		const readingView = DOMUtils.getMarkdownPreviewView();
+		if (!readingView) return;
+
+		this.removeMobileUI();
+		const buttons = this.createButtonsContainer();
+		readingView.appendChild(buttons);
+	}
+
+	removeMobileUI(): void {
+		const buttons = document.querySelector(
+			`.${READER_CLASSES.blockButtons}`
+		);
+		buttons?.remove();
+	}
+
+	private createNavigationButton(
+		direction: NavigationDirection | "scroll",
+		icon: string
+	): HTMLElement {
+		const button = document.createElement("button");
+		button.addClass("clickable-icon");
+		setIcon(button, icon);
+		button.addEventListener("click", async (evt) => {
+			evt.stopPropagation();
+			if (direction === "scroll") {
+				const highlightedBlock = document.querySelector(
+					`.${READER_CLASSES.highlight}`
+				);
+				if (highlightedBlock) {
+					DOMUtils.scrollToBlock(highlightedBlock as HTMLElement);
+				} else {
+					const activeFile =
+						this.plugin.app.workspace.getActiveFile();
+					if (activeFile) {
+						const position = await ProgressStorage.loadPosition(
+							this.plugin,
+							activeFile.path
+						);
+						if (position) {
+							const blocks = DOMUtils.getValidBlocks();
+							if (position.blockIndex < blocks.length) {
+								const block = blocks[position.blockIndex];
+								DOMUtils.highlightBlock(block);
+								DOMUtils.scrollToBlock(block);
+							}
+						}
+					}
+				}
+			} else {
+				this.plugin.navigateBlocks(direction);
+			}
+		});
+		return button;
+	}
+
+	private createButtonsContainer(): HTMLElement {
+		const container = document.createElement("div");
+		container.addClass(READER_CLASSES.blockButtons);
+
+		container.appendChild(
+			this.createNavigationButton("previous", "chevron-up")
+		);
+		container.appendChild(this.createNavigationButton("scroll", "circle"));
+		container.appendChild(
+			this.createNavigationButton("next", "chevron-down")
+		);
+
+		return container;
 	}
 }

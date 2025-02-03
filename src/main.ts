@@ -2,13 +2,11 @@ import { Plugin, Platform } from "obsidian";
 import { ReaderSettings, NavigationDirection } from "./types/interfaces";
 import { DEFAULT_SETTINGS, READER_CLASSES } from "./utils/constants";
 import { BlockNavigator } from "./services/block-navigator";
-import { MobileUI } from "./ui/mobile-ui";
 import { ReaderSettingTab } from "./ui/settings-tab";
 import { DOMUtils } from "./utils/dom-utils";
 
 export default class ReaderPlugin extends Plugin {
 	settings: ReaderSettings;
-	private mobileUI: MobileUI;
 	private blockNavigator: BlockNavigator;
 
 	async onload() {
@@ -20,7 +18,6 @@ export default class ReaderPlugin extends Plugin {
 
 	private async initializePlugin() {
 		this.blockNavigator = new BlockNavigator(this);
-		this.mobileUI = new MobileUI(this);
 
 		this.registerPluginFeatures();
 		await this.enableFunctionality();
@@ -56,7 +53,7 @@ export default class ReaderPlugin extends Plugin {
 
 	private async enableFunctionality(): Promise<void> {
 		if (Platform.isMobile) {
-			this.mobileUI.create();
+			this.blockNavigator.createMobileUI();
 		}
 
 		document.addEventListener(
@@ -70,7 +67,7 @@ export default class ReaderPlugin extends Plugin {
 	}
 
 	private disableFunctionality(): void {
-		this.mobileUI.remove();
+		this.blockNavigator.removeMobileUI();
 		document.removeEventListener(
 			"click",
 			this.blockNavigator.handleClick.bind(this.blockNavigator)
