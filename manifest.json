@@ -1,9 +1,9 @@
 {
 	"id": "obsidian-reader",
 	"name": "Reader",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"minAppVersion": "1.4.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
+	"description": "Comfortable reading experience with progressive viewing mode.",
 	"author": "Alexis C",
 	"authorUrl": "https://github.com/aaaaalexis",
 	"fundingUrl": "https://buymeacoffee.com/sevenaxis",
