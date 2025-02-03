@@ -1,11 +1,11 @@
 {
-	"id": "obsidian-reader",
-	"name": "Reader",
-	"version": "0.0.3",
-	"minAppVersion": "1.4.0",
-	"description": "Comfortable reading experience with progressive viewing mode.",
-	"author": "Alexis C",
-	"authorUrl": "https://github.com/aaaaalexis",
-	"fundingUrl": "https://buymeacoffee.com/sevenaxis",
-	"isDesktopOnly": false
+  "id": "obsidian-reader",
+  "name": "Reader",
+  "version": "0.0.4",
+  "minAppVersion": "1.4.0",
+  "description": "Comfortable reading experience with progressive viewing mode.",
+  "author": "Alexis C",
+  "authorUrl": "https://github.com/aaaaalexis",
+  "fundingUrl": "https://buymeacoffee.com/sevenaxis",
+  "isDesktopOnly": false
 }
