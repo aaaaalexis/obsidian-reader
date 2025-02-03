@@ -1,4 +1,4 @@
-import { Plugin, Platform, Menu } from "obsidian";
+import { Plugin, Platform } from "obsidian";
 import { ReaderSettings, NavigationDirection } from "./types/interfaces";
 import { DEFAULT_SETTINGS, READER_CLASSES } from "./utils/constants";
 import { BlockNavigator } from "./services/block-navigator";
@@ -10,7 +10,6 @@ export default class ReaderPlugin extends Plugin {
 	settings: ReaderSettings;
 	private mobileUI: MobileUI;
 	private blockNavigator: BlockNavigator;
-	private isEnabled: boolean = false;
 
 	async onload() {
 		await this.loadSettings();
@@ -23,44 +22,13 @@ export default class ReaderPlugin extends Plugin {
 		this.blockNavigator = new BlockNavigator(this);
 		this.mobileUI = new MobileUI(this);
 
-		this.isEnabled = this.settings.isEnabled;
-
 		this.registerPluginFeatures();
-
-		if (this.isEnabled) {
-			await this.enableFunctionality();
-			this.restoreReadingPosition();
-		}
+		await this.enableFunctionality();
+		this.restoreReadingPosition();
 	}
 
 	private registerPluginFeatures(): void {
 		this.addSettingTab(new ReaderSettingTab(this.app, this));
-		this.registerEvent(
-			this.app.workspace.on("file-menu", this.addMenuOption.bind(this))
-		);
-	}
-
-	private addMenuOption(menu: Menu): void {
-		menu.addItem((item) => {
-			item.setTitle("Toggle Reader Mode")
-				.setIcon("book-open-text")
-				.setChecked(this.isEnabled)
-				.onClick(async () => {
-					await this.toggleReaderMode();
-				});
-		});
-	}
-
-	private async toggleReaderMode(): Promise<void> {
-		this.isEnabled = !this.isEnabled;
-		this.settings.isEnabled = this.isEnabled;
-		await this.saveSettings();
-
-		if (this.isEnabled) {
-			await this.enableFunctionality();
-		} else {
-			this.disableFunctionality();
-		}
 	}
 
 	private handleKeydown = (evt: KeyboardEvent): void => {

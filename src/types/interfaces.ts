@@ -9,7 +9,6 @@ export interface ReadingPosition {
 export interface ReaderSettings {
 	previousBlockKeys: string[];
 	nextBlockKeys: string[];
-	isEnabled: boolean;
 }
 
 export type NavigationDirection = "previous" | "next";
