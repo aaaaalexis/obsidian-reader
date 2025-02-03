@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-reader",
 	"name": "Reader",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"minAppVersion": "1.4.0",
 	"description": "Comfortable reading experience with progressive viewing mode.",
 	"author": "Alexis C",
