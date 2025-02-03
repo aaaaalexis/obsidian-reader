@@ -2,12 +2,15 @@ import { ReaderPlugin, NavigationDirection } from "../types/interfaces";
 import { ProgressStorage } from "./progress-storage";
 import { DOMUtils } from "../utils/dom-utils";
 import { READER_CLASSES } from "../utils/constants";
-import { setIcon } from "obsidian";
+import { setIcon, Platform } from "obsidian";
 
 export class BlockNavigator {
 	constructor(private plugin: ReaderPlugin) {}
+	private enabled: boolean = false;
 
 	async navigateToBlock(direction: NavigationDirection): Promise<void> {
+		if (!this.enabled) return;
+
 		const blocks = DOMUtils.getValidBlocks();
 		const currentIndex = DOMUtils.getCurrentBlockIndex();
 
@@ -40,13 +43,10 @@ export class BlockNavigator {
 		);
 
 		if (isCurrentlyHighlighted) {
-			DOMUtils.clearHighlights();
+			await this.disable();
 		} else {
-			DOMUtils.highlightBlock(block);
-			DOMUtils.scrollToBlock(block);
+			await this.enable(block);
 		}
-
-		await this.savePosition();
 	}
 
 	async restorePosition(): Promise<void> {
@@ -57,13 +57,17 @@ export class BlockNavigator {
 			this.plugin,
 			activeFile.path
 		);
-		if (!position) return;
+		if (!position || !position.enabled) return;
 
+		this.enabled = true;
 		const blocks = DOMUtils.getValidBlocks();
 		if (position.blockIndex < blocks.length) {
 			const block = blocks[position.blockIndex];
 			DOMUtils.highlightBlock(block);
 			DOMUtils.scrollToBlock(block);
+			if (Platform.isMobile) {
+				this.createMobileUI();
+			}
 		}
 	}
 
@@ -81,8 +85,29 @@ export class BlockNavigator {
 		}
 	}
 
-	clearHighlights(): void {
+	private async enable(block: HTMLElement): Promise<void> {
+		this.enabled = true;
+		DOMUtils.highlightBlock(block);
+		DOMUtils.scrollToBlock(block);
+		if (Platform.isMobile) {
+			this.createMobileUI();
+		}
+		await this.savePosition();
+	}
+
+	async disable(): Promise<void> {
+		this.enabled = false;
 		DOMUtils.clearHighlights();
+		this.removeMobileUI();
+		const activeFile = this.plugin.app.workspace.getActiveFile();
+		if (activeFile) {
+			await ProgressStorage.savePosition(
+				this.plugin,
+				activeFile.path,
+				-1,
+				false
+			);
+		}
 	}
 
 	createMobileUI(): void {

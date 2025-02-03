@@ -31,6 +31,12 @@ export default class ReaderPlugin extends Plugin {
 	private handleKeydown = (evt: KeyboardEvent): void => {
 		if (this.shouldIgnoreKeyEvent(evt)) return;
 
+		// Only handle keys if there's a highlighted block
+		const hasHighlight = document.querySelector(
+			`.${READER_CLASSES.highlight}`
+		);
+		if (!hasHighlight) return;
+
 		if (this.settings.previousBlockKeys.includes(evt.key)) {
 			evt.preventDefault();
 			this.navigateBlocks("previous");
@@ -66,26 +72,8 @@ export default class ReaderPlugin extends Plugin {
 		previewView?.addClass(READER_CLASSES.enabled);
 	}
 
-	private disableFunctionality(): void {
-		this.blockNavigator.removeMobileUI();
-		document.removeEventListener(
-			"click",
-			this.blockNavigator.handleClick.bind(this.blockNavigator)
-		);
-		document.removeEventListener("keydown", this.handleKeydown);
-
-		this.blockNavigator.clearHighlights();
-
-		const previewView = DOMUtils.getMarkdownPreviewView();
-		previewView?.removeClass(READER_CLASSES.enabled);
-	}
-
 	private async restoreReadingPosition(): Promise<void> {
 		this.blockNavigator.restorePosition();
-	}
-
-	async onunload() {
-		this.disableFunctionality();
 	}
 
 	async loadSettings() {

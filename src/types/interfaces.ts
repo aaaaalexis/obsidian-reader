@@ -4,6 +4,7 @@ export interface ReadingPosition {
 	filePath: string;
 	blockIndex: number;
 	lastRead: number;
+	enabled: boolean;
 }
 
 export interface ReaderSettings {
