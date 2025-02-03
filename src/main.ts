@@ -3,7 +3,6 @@ import { ReaderSettings, NavigationDirection } from "./types/interfaces";
 import { DEFAULT_SETTINGS, READER_CLASSES } from "./utils/constants";
 import { BlockNavigator } from "./services/block-navigator";
 import { ReaderSettingTab } from "./ui/settings-tab";
-import { DOMUtils } from "./utils/dom-utils";
 
 export default class ReaderPlugin extends Plugin {
 	settings: ReaderSettings;
@@ -16,7 +15,7 @@ export default class ReaderPlugin extends Plugin {
 		await this.enableFunctionality();
 
 		// Restore position on initial load
-		this.restoreReadingPosition();
+		this.blockNavigator.restorePosition();
 
 		// Restore (or initialize) reading progress on file-open
 		this.registerEvent(
@@ -61,10 +60,6 @@ export default class ReaderPlugin extends Plugin {
 			this.blockNavigator.handleClick.bind(this.blockNavigator)
 		);
 		document.addEventListener("keydown", this.handleKeydown);
-	}
-
-	private async restoreReadingPosition(): Promise<void> {
-		this.blockNavigator.restorePosition();
 	}
 
 	async loadSettings() {

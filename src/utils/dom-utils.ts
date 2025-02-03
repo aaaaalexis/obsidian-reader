@@ -62,17 +62,21 @@ export class DOMUtils {
 	}
 
 	static isDOMReady(): boolean {
-        return !!this.getMarkdownPreviewView() && 
-               this.getValidBlocks().length > 0;
-    }
+		return (
+			!!this.getMarkdownPreviewView() && this.getValidBlocks().length > 0
+		);
+	}
 
-    static async waitForDOM(maxAttempts: number = 10, interval: number = 100): Promise<boolean> {
-        for (let i = 0; i < maxAttempts; i++) {
-            if (this.isDOMReady()) {
-                return true;
-            }
-            await new Promise(resolve => setTimeout(resolve, interval));
-        }
-        return false;
-    }
+	static async waitForDOM(
+		maxAttempts: number = 10,
+		interval: number = 100
+	): Promise<boolean> {
+		for (let i = 0; i < maxAttempts; i++) {
+			if (this.isDOMReady()) {
+				return true;
+			}
+			await new Promise((resolve) => setTimeout(resolve, interval));
+		}
+		return false;
+	}
 }
