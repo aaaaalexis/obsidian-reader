@@ -5,10 +5,23 @@ import { READER_CLASSES } from "../utils/constants";
 
 export class BlockNavigator {
 	constructor(private plugin: ReaderPlugin) {}
-
 	async navigateToBlock(direction: NavigationDirection): Promise<void> {
 		const blocks = DOMUtils.getValidBlocks();
-		const currentIndex = DOMUtils.getCurrentBlockIndex();
+		let currentIndex = DOMUtils.getCurrentBlockIndex();
+
+		// If no block is highlighted, try to restore the saved position first
+		if (currentIndex === -1) {
+			const activeFile = this.plugin.app.workspace.getActiveFile();
+			if (activeFile) {
+				const position = await ProgressStorage.loadPosition(
+					this.plugin,
+					activeFile.path
+				);
+				if (position) {
+					currentIndex = position.blockIndex;
+				}
+			}
+		}
 
 		const nextIndex =
 			currentIndex === -1

@@ -2,6 +2,7 @@ import { setIcon } from "obsidian";
 import { ReaderPlugin, NavigationDirection } from "../types/interfaces";
 import { READER_CLASSES } from "../utils/constants";
 import { DOMUtils } from "../utils/dom-utils";
+import { ProgressStorage } from "../services/progress-storage";
 
 export class MobileUI {
 	private buttons: HTMLElement | null = null;
@@ -29,7 +30,7 @@ export class MobileUI {
 		const button = document.createElement("button");
 		button.addClass("clickable-icon");
 		setIcon(button, icon);
-		button.addEventListener("click", (evt) => {
+		button.addEventListener("click", async (evt) => {
 			evt.stopPropagation();
 			if (direction === "scroll") {
 				const highlightedBlock = document.querySelector(
@@ -37,6 +38,24 @@ export class MobileUI {
 				);
 				if (highlightedBlock) {
 					DOMUtils.scrollToBlock(highlightedBlock as HTMLElement);
+				} else {
+					// Try to restore saved position if no block is highlighted
+					const activeFile =
+						this.plugin.app.workspace.getActiveFile();
+					if (activeFile) {
+						const position = await ProgressStorage.loadPosition(
+							this.plugin,
+							activeFile.path
+						);
+						if (position) {
+							const blocks = DOMUtils.getValidBlocks();
+							if (position.blockIndex < blocks.length) {
+								const block = blocks[position.blockIndex];
+								DOMUtils.highlightBlock(block);
+								DOMUtils.scrollToBlock(block);
+							}
+						}
+					}
 				}
 			} else {
 				this.plugin.navigateBlocks(direction);
