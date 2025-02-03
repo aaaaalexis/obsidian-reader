@@ -8,7 +8,8 @@ export const DEFAULT_SETTINGS: ReaderSettings = {
 export const READER_CLASSES = {
     highlight: "reader-highlight",
     blockButtons: "reader-block-buttons",
-    active: "reader-mode",
+    enabled: "reader-mode",
+    active: "reader-active",
 } as const;
 
 export const STORAGE_FILE = "progress.json";

@@ -20,7 +20,10 @@
 	border-radius: var(--radius-s);
 }
 
-.markdown-preview-view.reader-mode
-	[class^="el-"]:not(.mod-ui):not(.reader-highlight) {
+.reader-mode [class^="el-"] {
+	transition: opacity var(--anim-duration-fast);
+}
+
+.reader-active [class^="el-"]:not(.mod-ui):not(.reader-highlight) {
 	opacity: 0.5 !important;
 }

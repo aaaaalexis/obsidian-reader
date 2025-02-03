@@ -66,7 +66,7 @@ export default class ReaderPlugin extends Plugin {
 		document.addEventListener("keydown", this.handleKeydown);
 
 		const previewView = DOMUtils.getMarkdownPreviewView();
-		previewView?.addClass(READER_CLASSES.active);
+		previewView?.addClass(READER_CLASSES.enabled);
 	}
 
 	private disableFunctionality(): void {
@@ -80,7 +80,7 @@ export default class ReaderPlugin extends Plugin {
 		this.blockNavigator.clearHighlights();
 
 		const previewView = DOMUtils.getMarkdownPreviewView();
-		previewView?.removeClass(READER_CLASSES.active);
+		previewView?.removeClass(READER_CLASSES.enabled);
 	}
 
 	private async restoreReadingPosition(): Promise<void> {

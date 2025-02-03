@@ -41,6 +41,8 @@ export class DOMUtils {
 		document
 			.querySelectorAll(`.${READER_CLASSES.highlight}`)
 			.forEach((el) => el.classList.remove(READER_CLASSES.highlight));
+
+		this.getMarkdownPreviewView()?.classList.remove(READER_CLASSES.active);
 	}
 
 	static highlightBlock(block: HTMLElement | null): void {
@@ -48,6 +50,7 @@ export class DOMUtils {
 
 		this.clearHighlights();
 		block.classList.add(READER_CLASSES.highlight);
+		this.getMarkdownPreviewView()?.classList.add(READER_CLASSES.active);
 	}
 
 	static getCurrentBlockIndex(): number {
