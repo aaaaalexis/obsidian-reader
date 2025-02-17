@@ -33,3 +33,7 @@ Reader provides progressive viewing mode, bringing comfortable reading experienc
 ## License
 
 This plugin is licensed under the MIT License. See [LICENSE](LICENSE) for more details.
+
+## Acknowledgements
+
+This plugin is written by GitHub Copilot under human guidance.
