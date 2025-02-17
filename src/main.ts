@@ -5,79 +5,63 @@ import { BlockNavigator } from "./services/block-navigator";
 import { ReaderSettingTab } from "./ui/settings-tab";
 
 export default class ReaderPlugin extends Plugin {
-	settings: ReaderSettings;
-	private blockNavigator: BlockNavigator;
+  settings: ReaderSettings;
+  private blockNavigator: BlockNavigator;
 
-	async onload() {
-		await this.loadSettings();
-		this.blockNavigator = new BlockNavigator(this);
-		this.addSettingTab(new ReaderSettingTab(this.app, this));
-		await this.enableFunctionality();
+  async onload() {
+    await this.loadSettings();
+    this.blockNavigator = new BlockNavigator(this);
+    this.addSettingTab(new ReaderSettingTab(this.app, this));
+    await this.enableFunctionality();
 
-		// Restore position on initial load
-		this.blockNavigator.restorePosition();
+    this.blockNavigator.restorePosition();
 
-		// Restore (or initialize) reading progress on file-open
-		this.registerEvent(
-			this.app.workspace.on("file-open", () => {
-				this.blockNavigator.restorePosition();
-			})
-		);
-	}
+    this.registerEvent(
+      this.app.workspace.on("file-open", () => {
+        this.blockNavigator.restorePosition();
+      })
+    );
+  }
 
-	private handleKeydown = (evt: KeyboardEvent): void => {
-		if (this.shouldIgnoreKeyEvent(evt)) return;
+  private handleKeydown = (evt: KeyboardEvent): void => {
+    if (this.shouldIgnoreKeyEvent(evt)) return;
 
-		// Handle Escape key
-		if (evt.key === "Escape") {
-			evt.preventDefault();
-			this.blockNavigator.disable();
-			return;
-		}
-	
-		// Only handle navigation keys if there's a highlighted block
-		const hasHighlight = document.querySelector(
-			`.${READER_CLASSES.highlight}`
-		);
-		if (!hasHighlight) return;
+    if (evt.key === "Escape") {
+      evt.preventDefault();
+      this.blockNavigator.disable();
+      return;
+    }
 
-		if (this.settings.previousBlockKeys.includes(evt.key)) {
-			evt.preventDefault();
-			this.navigateBlocks("previous");
-		} else if (this.settings.nextBlockKeys.includes(evt.key)) {
-			evt.preventDefault();
-			this.navigateBlocks("next");
-		}
-	};
+    const hasHighlight = document.querySelector(`.${READER_CLASSES.highlight}`);
+    if (!hasHighlight) return;
 
-	private shouldIgnoreKeyEvent(evt: KeyboardEvent): boolean {
-		return (
-			evt.target instanceof HTMLInputElement ||
-			evt.target instanceof HTMLTextAreaElement
-		);
-	}
+    if (this.settings.previousBlockKeys.includes(evt.key)) {
+      evt.preventDefault();
+      this.navigateBlocks("previous");
+    } else if (this.settings.nextBlockKeys.includes(evt.key)) {
+      evt.preventDefault();
+      this.navigateBlocks("next");
+    }
+  };
 
-	navigateBlocks(direction: NavigationDirection): void {
-		this.blockNavigator.navigateToBlock(direction);
-	}
+  private shouldIgnoreKeyEvent(evt: KeyboardEvent): boolean {
+    return evt.target instanceof HTMLInputElement || evt.target instanceof HTMLTextAreaElement;
+  }
 
-	private async enableFunctionality(): Promise<void> {
-		document.addEventListener(
-			"click",
-			this.blockNavigator.handleClick.bind(this.blockNavigator)
-		);
-		document.addEventListener("keydown", this.handleKeydown);
-	}
+  navigateBlocks(direction: NavigationDirection): void {
+    this.blockNavigator.navigateToBlock(direction);
+  }
 
-	async loadSettings() {
-		this.settings = Object.assign(
-			{},
-			DEFAULT_SETTINGS,
-			await this.loadData()
-		);
-	}
+  private async enableFunctionality(): Promise<void> {
+    document.addEventListener("click", this.blockNavigator.handleClick.bind(this.blockNavigator));
+    document.addEventListener("keydown", this.handleKeydown);
+  }
 
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
+  async loadSettings() {
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+  }
+
+  async saveSettings() {
+    await this.saveData(this.settings);
+  }
 }
