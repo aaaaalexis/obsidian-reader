@@ -28,7 +28,14 @@ export default class ReaderPlugin extends Plugin {
 	private handleKeydown = (evt: KeyboardEvent): void => {
 		if (this.shouldIgnoreKeyEvent(evt)) return;
 
-		// Only handle keys if there's a highlighted block
+		// Handle Escape key
+		if (evt.key === "Escape") {
+			evt.preventDefault();
+			this.blockNavigator.disable();
+			return;
+		}
+	
+		// Only handle navigation keys if there's a highlighted block
 		const hasHighlight = document.querySelector(
 			`.${READER_CLASSES.highlight}`
 		);

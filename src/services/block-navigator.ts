@@ -33,18 +33,31 @@ export class BlockNavigator {
 		const target = evt.target as HTMLElement;
 		if (target.closest(".reader-mobile-nav")) return;
 
-		const block = target.closest(
-			".markdown-preview-section > *"
-		) as HTMLElement;
+		const block = target.closest(".markdown-preview-section > *") as HTMLElement;
+
+		// Disable if clicking outside of valid blocks
+		if (!block && this.enabled) {
+			await this.disable();
+			return;
+		}
 		if (!block) return;
 
-		const isCurrentlyHighlighted = block.classList.contains(
-			READER_CLASSES.highlight
-		);
+		const isCurrentlyHighlighted = block.classList.contains(READER_CLASSES.highlight);
 
-		if (isCurrentlyHighlighted) {
-			await this.disable();
-		} else {
+		// If reader is enabled
+		if (this.enabled) {
+			if (isCurrentlyHighlighted) {
+				// Disable on single click of highlighted block
+				await this.disable();
+			} else {
+				// Switch to new block on single click
+				await this.enable(block);
+			}
+			return;
+		}
+	
+		// If reader is disabled, require double click to enable
+		if (evt.detail === 2) {
 			await this.enable(block);
 		}
 	}
