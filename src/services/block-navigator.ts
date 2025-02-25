@@ -100,6 +100,7 @@ export class BlockNavigator {
 
   private async enable(block: HTMLElement): Promise<void> {
     this.enabled = true;
+    window.getSelection()?.empty();
     DOMUtils.highlightBlock(block);
     DOMUtils.scrollToBlock(block);
     if (Platform.isMobile) {
