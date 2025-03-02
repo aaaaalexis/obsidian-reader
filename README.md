@@ -22,7 +22,7 @@ Reader provides progressive viewing mode, bringing comfortable reading experienc
 ## Usage
 
 -   **Navigating Blocks:**
-    -   Click on any block in **Reading View** to enable Reader.
+    -   Click (double click on mobile) on any block in **Reading View** to enable Reader.
     -   Default keyboard shortcuts:
         -   **Previous Block:** Arrow Up, Arrow Left
         -   **Next Block:** Arrow Down, Arrow Right
