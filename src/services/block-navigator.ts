@@ -47,7 +47,9 @@ export class BlockNavigator {
       return;
     }
 
-    if (evt.detail === 2) {
+    // For desktop: use double click
+    // For mobile: allow single tap to enable highlighting
+    if (evt.detail === 2 || Platform.isMobile) {
       await this.enable(block);
     }
   }
